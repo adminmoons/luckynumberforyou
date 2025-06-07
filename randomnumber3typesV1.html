@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมสุ่มตัวเลข</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-choice {
+            transition: all 0.3s ease;
+        }
+        .btn-choice:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        #result-display {
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body class="gradient-bg text-white min-h-screen flex items-center justify-center p-4">
+
+    <div class="card w-full max-w-md p-8 rounded-2xl shadow-2xl text-center">
+        
+        <!-- ส่วนเลือกจำนวนหลัก -->
+        <div id="selection-screen">
+            <h1 class="text-4xl font-bold mb-4">ตัวเลขฟ้าประทาน</h1>
+            <p class="text-lg text-blue-200 mb-8">ต้องการตัวเลขกี่หลัก?</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="generateNumber(2)" class="btn-choice bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-xl">
+                    2 หลัก
+                </button>
+                <button onclick="generateNumber(3)" class="btn-choice bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-xl">
+                    3 หลัก
+                </button>
+                <button onclick="generateNumber(6)" class="btn-choice bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-lg text-xl">
+                    6 หลัก
+                </button>
+            </div>
+        </div>
+
+        <!-- ส่วนแสดงผลลัพธ์ -->
+        <div id="result-screen" class="hidden">
+            <h2 class="text-2xl font-bold mb-4 text-blue-200">เลขที่ฟ้าประทานคือ:</h2>
+            <div id="result-display" class="bg-gray-900 bg-opacity-50 text-6xl font-bold my-6 p-6 rounded-lg text-yellow-300">
+                <!-- ตัวเลขจะแสดงที่นี่ -->
+            </div>
+            <button onclick="resetGame()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-lg text-xl">
+                กลับหน้าจอหลัก
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // ดึง Element จาก HTML
+        const selectionScreen = document.getElementById('selection-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const resultDisplay = document.getElementById('result-display');
+
+        /**
+         * ฟังก์ชันสำหรับสุ่มตัวเลขตามจำนวนหลักที่เลือก
+         * @param {number} digits - จำนวนหลัก (2, 3, หรือ 6)
+         */
+        function generateNumber(digits) {
+            let lowerBound = 0;
+            let upperBound = 0;
+
+            // กำหนดขอบเขตของตัวเลขตามจำนวนหลัก
+            if (digits === 2) {
+                lowerBound = 10;
+                upperBound = 99;
+            } else if (digits === 3) {
+                lowerBound = 100;
+                upperBound = 999;
+            } else if (digits === 6) {
+                lowerBound = 100000;
+                upperBound = 999999;
+            } else {
+                // กรณีใส่ค่าที่ไม่ถูกต้อง (เผื่อไว้)
+                console.error("จำนวนหลักไม่ถูกต้อง");
+                return;
+            }
+
+            // สุ่มตัวเลข
+            // Math.random() จะได้ค่าระหว่าง 0 (รวม) ถึง 1 (ไม่รวม)
+            // เราจึงคูณกับช่วงของตัวเลข, ปัดเศษลง, และบวกด้วยค่าเริ่มต้น
+            const randomNumber = Math.floor(Math.random() * (upperBound - lowerBound + 1)) + lowerBound;
+            
+            // แสดงผลลัพธ์
+            resultDisplay.textContent = randomNumber; // resultDisplay.textContent = randomNumber.toLocaleString();toLocaleString() ช่วยใส่จุลภาคให้ เช่น 100,000
+
+            // สลับหน้าจอ
+            selectionScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+        }
+
+        /**
+         * ฟังก์ชันสำหรับรีเซ็ตเกมเพื่อเล่นใหม่
+         */
+        function resetGame() {
+            // สลับหน้าจอกลับไปหน้าเลือก
+            selectionScreen.classList.remove('hidden');
+            resultScreen.classList.add('hidden');
+            resultDisplay.textContent = ''; // ล้างค่าตัวเลขเดิม
+        }
+    </script>
+
+</body>
+</html>
